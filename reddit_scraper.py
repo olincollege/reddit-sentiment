@@ -36,7 +36,7 @@ for sub in subreddit_list:
             comments_dict["comment_parent_id"].append(comment.parent_id)
             comments_dict["comment_body"].append(comment.body)
             comments_dict["comment_link_id"].append(comment.link_id)
+    
+    # Create dataframe from comments dictionary and save it to a CSV file
     post_comments = pd.DataFrame(comments_dict)
     post_comments.to_csv(sub + '_comments_top1.csv')
-
-# print(comments_dict["comment_body"])
