@@ -7,10 +7,11 @@ import re
 import en_core_web_sm
 import spacy
 
-#nltk.download('wordnet')
+# nltk.download('wordnet')
 
-def find_replies(df, comment_id):
-    return df[df['comment_parent_id'] == comment_id]
+subreddit_list = ['AmItheAsshole', 'politics', 'MadeMeSmile', 'AskReddit',
+                  'TalesFromRetail']
+
 
 def clean_comment(comment):
     comment = emoji.get_emoji_regexp().sub(u'', comment)
@@ -18,13 +19,13 @@ def clean_comment(comment):
     tokenized_comment = tokenizer.tokenize(comment)
     tokenized_comment = [word.lower() for word in tokenized_comment]
     lemmatizer = WordNetLemmatizer()
-    lemmatized_tokens = [lemmatizer.lemmatize(word) for word in tokenized_comment]
+    lemmatized_tokens = [lemmatizer.lemmatize(word)
+                         for word in tokenized_comment]
     return lemmatized_tokens
 
-am_i_the_asshole = pd.read_csv('AmItheAsshole_comments_top1.csv')
 
-am_i_the_asshole['tokenized_comment'] = am_i_the_asshole['comment_body'].apply(clean_comment)
-
-print(am_i_the_asshole['tokenized_comment'].head())
-
-am_i_the_asshole.to_csv('AmItheAsshole_comments_cleaned.csv')
+for subreddit in subreddit_list:
+    subreddit_df = pd.read_csv('./rawdata/' + subreddit + '_comments.csv')
+    subreddit_df['tokenized_comment'] = \
+        subreddit_df['comment_body'].apply(clean_comment)
+    subreddit_df.to_csv('./cleaneddata/' + subreddit + '_comments_cleaned.csv')
