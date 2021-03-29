@@ -3,14 +3,14 @@ putting this here so pylint stops yelling at us
 """
 import re
 import pandas as pd
-# import nltk
+import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 import emoji
 import en_core_web_sm
 import spacy
 
-# nltk.download('wordnet')
+nltk.download('wordnet')
 
 # Create list of strings of subreddits to scrape
 subreddit_list = ['AmItheAsshole', 'politics', 'MadeMeSmile', 'AskReddit',
@@ -33,7 +33,7 @@ def clean_comment(comment):
     lemmatizer = WordNetLemmatizer()
     lemmatized_tokens = [lemmatizer.lemmatize(word)
                          for word in tokenized_comment]
-    return lemmatized_tokens
+    return ','.join(lemmatized_tokens)
 
 for subreddit in subreddit_list:
     subreddit_df = pd.read_csv('./rawdata/' + subreddit + '_comments.csv')
