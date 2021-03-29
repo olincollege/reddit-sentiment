@@ -21,6 +21,7 @@ subreddit_list = ['AmItheAsshole', 'politics', 'MadeMeSmile', 'AskReddit',
 for sub in subreddit_list:
     subreddit = reddit.subreddit(sub)
 
+    # Choose types of data to save
     comments_dict = {
         'comment_id': [],
         'comment_parent_id': [],
@@ -28,7 +29,7 @@ for sub in subreddit_list:
         'comment_link_id': []
     }
 
-    # Top post all-time
+    # Selects single top post of all time
     # limit = top n posts of all time
     for submission in subreddit.top(limit=1):
         submission.comments.replace_more()
@@ -38,6 +39,6 @@ for sub in subreddit_list:
             comments_dict['comment_body'].append(comment.body)
             comments_dict['comment_link_id'].append(comment.link_id)
 
-    # Create dataframe from comments dictionary and save it to a CSV file
+    # Create DataFrame from comments dictionary and save it to a CSV file
     post_comments = pd.DataFrame(comments_dict)
     post_comments.to_csv('./rawdata/' + sub + '_comments.csv')
