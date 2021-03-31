@@ -17,8 +17,9 @@ def analyze_subreddit(subreddit):
 
     Returns:
         sentiment_dicts: A list of dictionaries where the keys are the
-        nesting depths for the comment replies and the values are the
-        average compound sentiment scores for that depth.
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
     """
     def find_replies(comment_df, comment_id):
         """
@@ -62,8 +63,8 @@ def analyze_subreddit(subreddit):
             if max(comment_dict.keys()) > max_depth:
                 max_depth = max(comment_dict.keys())
 
-        return [comment_dict for comment_dict in reply_dicts if 
-                    max(comment_dict.keys()) == max_depth]
+        return [comment_dict for comment_dict in reply_dicts if
+                max(comment_dict.keys()) == max_depth]
 
     def analyze_sentiment(comment_body):
         """
@@ -106,9 +107,16 @@ def analyze_subreddit(subreddit):
         """
         if len(comments_by_depth[depth]) > 0:
             comment_ids = comments_by_depth[depth]
-            sentiments = [analyze_sentiment(sub_df['tokenized_comment'].values[
-                sub_df['comment_id'] == comment_id][0].split(','))
-                for comment_id in comment_ids]
+
+            sentiments = []
+            for comment_id in comment_ids:
+                try:
+                    tokenized_comment = sub_df['tokenized_comment'].values[
+                        sub_df['comment_id'] == comment_id][0].split(',')
+                # Catches invalid comments (NaN)
+                except AttributeError:
+                    pass
+                sentiments.append(analyze_sentiment(tokenized_comment))
 
         return sum(sentiments) / len(sentiments)  # * len(sentiments) weight
 
@@ -117,7 +125,8 @@ def analyze_subreddit(subreddit):
         for comment_dict in reply_dicts:
             sentiment_dict = defaultdict(float)
             for depth in comment_dict.keys():
-                sentiment_dict[depth] = avg_depth_sentiment(depth, comment_dict)
+                sentiment_dict[depth] = (avg_depth_sentiment(
+                    depth, comment_dict), len(comment_dict[depth]))
             sentiment_dicts.append(dict(sentiment_dict))
         return sentiment_dicts
 
@@ -127,8 +136,10 @@ def analyze_subreddit(subreddit):
 
     # Find top level comments (comments are already in order by depth, so
     # the parent of the first comment is the original post)
-    top_level_comments = sub_df['comment_id'][sub_df['comment_parent_id'].str
-                            .contains(sub_df['comment_parent_id'][0])].tolist()
+    top_level_comments = \
+        sub_df['comment_id'][sub_df['comment_parent_id'].str.contains(sub_df[
+            'comment_parent_id'][0])].tolist()
+
     reply_dicts = []
 
     # Create dictionaries for each top level comment with all of their
@@ -140,5 +151,5 @@ def analyze_subreddit(subreddit):
         reply_dicts.append(dict(comments_by_depth))
 
     reply_dicts = get_most_replied_comments(reply_dicts)
-    
+
     return get_sentiment_dicts(reply_dicts)
