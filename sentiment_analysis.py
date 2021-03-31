@@ -16,9 +16,9 @@ def analyze_subreddit(subreddit):
         subreddit: String representing name of subreddit
 
     Returns:
-        TBD - 2-column dataframe or table for plotting
-        column 0 = reply depth (int)
-        column 1 = average sentiment for that depth
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are the
+        average compound sentiment scores for that depth.
     """
     def find_replies(comment_df, comment_id):
         """
@@ -55,6 +55,15 @@ def analyze_subreddit(subreddit):
         comments_by_depth[depth] += replies
         for reply_id in replies:
             create_depth_dict(depth + 1, reply_id)
+
+    def get_most_replied_comments(reply_dicts):
+        max_depth = 0
+        for comment_dict in reply_dicts:
+            if max(comment_dict.keys()) > max_depth:
+                max_depth = max(comment_dict.keys())
+
+        return [comment_dict for comment_dict in reply_dicts if 
+                    max(comment_dict.keys()) == max_depth]
 
     def analyze_sentiment(comment_body):
         """
@@ -103,6 +112,15 @@ def analyze_subreddit(subreddit):
 
         return sum(sentiments) / len(sentiments)  # * len(sentiments) weight
 
+    def get_sentiment_dicts(reply_dicts):
+        sentiment_dicts = []
+        for comment_dict in reply_dicts:
+            sentiment_dict = defaultdict(float)
+            for depth in comment_dict.keys():
+                sentiment_dict[depth] = avg_depth_sentiment(depth, comment_dict)
+            sentiment_dicts.append(dict(sentiment_dict))
+        return sentiment_dicts
+
     # Read in cleaned subreddit DataFrame
     sub_df = pd.read_csv('./cleaneddata/' + subreddit +
                          '_comments_cleaned.csv')
@@ -119,16 +137,8 @@ def analyze_subreddit(subreddit):
         comments_by_depth = defaultdict(list)
         comments_by_depth[0].append(comment)
         create_depth_dict(1, comment)
-        reply_dicts.append(comments_by_depth)
+        reply_dicts.append(dict(comments_by_depth))
 
-    print(avg_depth_sentiment(0, reply_dicts[0]))
-    # print(avg_depth_sentiment(1, reply_dicts[0]))
-    # print(avg_depth_sentiment(2, reply_dicts[0]))
-    # print(avg_depth_sentiment(3, reply_dicts[0]))
-    # print(avg_depth_sentiment(4, reply_dicts[0]))
-    # print(avg_depth_sentiment(5, reply_dicts[0]))
-    # print(avg_depth_sentiment(6, reply_dicts[0]))
-    # print(avg_depth_sentiment(7, reply_dicts[0]))
-    # print(avg_depth_sentiment(8, reply_dicts[0]))
-    # print(avg_depth_sentiment(9, reply_dicts[0]))
-    # print(avg_depth_sentiment(10, reply_dicts[0]))
+    reply_dicts = get_most_replied_comments(reply_dicts)
+    
+    return get_sentiment_dicts(reply_dicts)

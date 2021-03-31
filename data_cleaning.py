@@ -5,8 +5,8 @@ import emoji
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
-# import nltk
-# nltk.download('wordnet')
+import nltk
+nltk.download('wordnet')
 
 
 def clean_comment(comment):
