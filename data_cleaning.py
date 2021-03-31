@@ -5,8 +5,8 @@ import emoji
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
-import nltk
-nltk.download('wordnet')
+# import nltk
+# nltk.download('wordnet')
 
 
 def clean_comment(comment):
@@ -23,7 +23,7 @@ def clean_comment(comment):
     # Remove emojis from comment
     comment = emoji.get_emoji_regexp().sub(u'', comment)
     # Tokenize comment (split into list of words) and remove links
-    tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|http\S+')
+    tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|http\S+')
     tokenized_comment = tokenizer.tokenize(comment)
     # Make all words lowercase
     tokenized_comment = [word.lower() for word in tokenized_comment]
