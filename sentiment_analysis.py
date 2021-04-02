@@ -109,7 +109,10 @@ def analyze_sentiment(comment_body):
         pol_score['words'] = word
         results.append(pol_score['compound'])
 
-    return sum(results) / len(results)
+    try:
+        return sum(results) / len(results)
+    except ZeroDivisionError:
+        return 0
 
 
 def avg_depth_sentiment(comment_df, depth, comments_by_depth):

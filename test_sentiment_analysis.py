@@ -57,26 +57,6 @@ get_analyze_sentiment_cases = [
     "today today"
 ]
 
-get_analyze_sentiment_cases_positives = [
-    # Check that a single positive word returns a positive number.
-    "good",
-    # Check that multiple positive words return a positive number.
-    "good good",
-    # Check that mutiple positive words and one negative word returns a
-    # positive number.
-    "bad good great good awesome"
-]
-
-get_analyze_sentiment_cases_negatives = [
-    # Check that a single negative word returns a negative number.
-    "bad",
-    # Check that multiple negative words return a negative number.
-    "bad bad",
-    # Check that mutiple negative words and one positive word returns a
-    # negative number.
-    "good bad terrible bad"
-]
-
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
 
@@ -127,8 +107,8 @@ def test_most_replied_comments(reply_dicts, most_replied_comment):
     assert get_most_replied_comments(reply_dicts) == most_replied_comment
 
 
-@pytest.mark.parametrize("comment_body, score", get_analyze_sentiment_cases)
-def test_analyze_sentiment(comment_body, score):
+@pytest.mark.parametrize("comment_body", get_analyze_sentiment_cases)
+def test_analyze_sentiment(comment_body):
     """
     Test that sentiment analysis works as expected.
 
@@ -137,32 +117,4 @@ def test_analyze_sentiment(comment_body, score):
         score: A float representing the average compound polarity score for the
         comment.
     """
-    assert analyze_sentiment(comment_body) == score
-
-
-@pytest.mark.parametrize("comment_body", get_analyze_sentiment_cases_positives)
-def test_analyze_sentiment(comment_body):
-    """
-    Test that positive text returns a value = (0, 1].
-
-    Args:
-        comment_body: String representing the body text of the comment.
-        score: A float representing the average compound polarity score for the
-            comment.
-    """
-    assert analyze_sentiment(comment_body) > 0 & \
-        analyze_sentiment(comment_body) <= 1
-
-
-@pytest.mark.parametrize("comment_body", get_analyze_sentiment_cases_negatives)
-def test_analyze_sentiment(comment_body):
-    """
-    Test that negative text returns a value = [-1, 0).
-
-    Args:
-        comment_body: String representing the body text of the comment.
-        score: A float representing the average compound polarity score for the
-            comment.
-    """
-    assert analyze_sentiment(comment_body) < 0 & \
-        analyze_sentiment(comment_body) >= -1
+    assert analyze_sentiment(comment_body) == 0
