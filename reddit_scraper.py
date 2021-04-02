@@ -1,6 +1,5 @@
 """
-DON'T FORGET TO PUT IN THE LOGIN INFO
-ALSO TAKE IT OUT AFTER FINISHING EDITING
+Scrapes Reddit threads for data.
 """
 import praw
 import pandas as pd

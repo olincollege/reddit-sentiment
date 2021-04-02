@@ -1,5 +1,6 @@
 """
-putting this here so pylint stops yelling at us
+Run this file to scrape and clean data. Don't forget to remove the account ID
+and secret after obtaining data!
 """
 import reddit_scraper
 import data_cleaning
