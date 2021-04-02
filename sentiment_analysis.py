@@ -198,6 +198,4 @@ def analyze_subreddit(subreddit):
     # Only use the comments with the deepest nesting of replies
     reply_dicts = get_most_replied_comments(reply_dicts)
 
-    print(sub_df['tokenized_comment'].head())
-
     return get_sentiment_dicts(sub_df, reply_dicts)

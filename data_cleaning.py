@@ -42,7 +42,7 @@ def lemmatize_sentence(sentence):
         A lemmatized sentence.
     """
     tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|http\S+')
-    words = tokenizer.tokenize(sentence);
+    words = tokenizer.tokenize(sentence)
     # Make all words lowercase
     words = [word.lower() for word in words]
     # Lemmatize word to change them to the stem words
