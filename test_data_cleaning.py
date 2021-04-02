@@ -1,5 +1,5 @@
 """
-unit tests go here
+Unit tests for data_cleaning.py
 """
 from collections import Counter
 import pytest
@@ -29,7 +29,7 @@ get_clean_comment_cases = [
 @pytest.mark.parametrize("raw_comment, cleaned_comment", get_clean_comment_cases)
 def test_clean_comment(raw_comment, cleaned_comment):
     """
-    Test that comments are cleaned correctly.
+    Test that comments are processed correctly.
     
     Args:
         raw_comment: A string representing a Reddit comment.

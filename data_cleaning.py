@@ -1,5 +1,5 @@
 """
-putting this here so pylint stops yelling at us
+Pre-process data for sentiment analysis.
 """
 import emoji
 from nltk.stem import WordNetLemmatizer
