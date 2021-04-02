@@ -4,8 +4,8 @@ putting this here so pylint stops yelling at us
 from collections import defaultdict
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 import pandas as pd
-# import nltk
-# nltk.download('vader_lexicon')
+import nltk
+nltk.download('vader_lexicon')
 
 
 def find_replies(comment_df, comment_id):
@@ -24,6 +24,17 @@ def find_replies(comment_df, comment_id):
                                     .contains(comment_id)].tolist()
 
 def create_reply_dict(comment_df, comment):
+    """
+    Organize comments by depth.
+    
+    Args:
+        comment_df: DataFrame containing, at minimum, comment_id and
+            comment_parent_id data.
+        comment: A string representing the cleaned contents of the parent comment.
+        
+    Returns:
+        comments_by_depth: A dictionary where the keys are depths and the values are lists of strings containing the comment texts at that depth.
+    """
     comments_by_depth = defaultdict(list)
     comments_by_depth[0].append(comment)
     
@@ -52,6 +63,15 @@ def create_reply_dict(comment_df, comment):
     return dict(comments_by_depth)
 
 def get_most_replied_comments(reply_dicts):
+    """
+    Get the most replied-to comments.
+    
+    Args:
+        reply_dicts: A list of dictionaries, where the key represents depth and the values represent the comment_id of each comment at that depth.
+        
+    Returns:
+        A list of comment_dict(s) for the comment(s) with the greatest number of replies.
+    """
     max_depth = 0
     for comment_dict in reply_dicts:
         if max(comment_dict.keys()) > max_depth:
@@ -89,11 +109,8 @@ def avg_depth_sentiment(comment_df, depth, comments_by_depth):
     Return average sentiment of all comments of the same depth.
 
     Args:
-        depth: An int representing the depth (nesting level) to average
-        the reply sentiment scores at.
-        comments_by_depth: A dictionary representing the replies to a
-        comment with the nesting depth as the keys and lists of comment ids
-        as values.
+        depth: An int representing the depth (nesting level) to average the reply sentiment scores at.
+        comments_by_depth: A dictionary representing the replies to a comment with the nesting depth as the keys and lists of comment ids as values.
 
     Returns:
         A float representing the average compound sentiment score of
@@ -112,9 +129,22 @@ def avg_depth_sentiment(comment_df, depth, comments_by_depth):
                 pass
             sentiments.append(analyze_sentiment(tokenized_comment))
 
-    return sum(sentiments) / len(sentiments)  # * len(sentiments) weight
+    return sum(sentiments) / len(sentiments)
 
 def get_sentiment_dicts(comment_df, reply_dicts):
+    """
+    Map each depth to the average sentiment of the comments at that depth.
+    
+    Args:
+        comment_df: DataFrame containing cleaned comment data.
+        reply_dicts: A list of dictionaries, where the key represents depth and the values represent the comment_id of each comment at that depth.
+        
+    Returns:
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    """
     sentiment_dicts = []
     for comment_dict in reply_dicts:
         sentiment_dict = defaultdict(float)
