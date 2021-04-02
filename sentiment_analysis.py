@@ -23,15 +23,16 @@ def find_replies(comment_df, comment_id):
     return comment_df['comment_id'][comment_df['comment_parent_id'].str
                                     .contains(comment_id)].tolist()
 
+
 def create_reply_dict(comment_df, comment):
     """
     Organize comments by depth.
-    
+
     Args:
         comment_df: DataFrame containing, at minimum, comment_id and
             comment_parent_id data.
         comment: A string representing the cleaned contents of the parent comment.
-        
+
     Returns:
         comments_by_depth: A dictionary where the keys are depths and the 
             values are lists of strings containing the comment texts at that 
@@ -39,7 +40,7 @@ def create_reply_dict(comment_df, comment):
     """
     comments_by_depth = defaultdict(list)
     comments_by_depth[0].append(comment)
-    
+
     def build_depth_dict(depth, comment_id_of_parent):
         """
         For a comment and all its child comments, map each comment to its depth.
@@ -60,18 +61,19 @@ def create_reply_dict(comment_df, comment):
         comments_by_depth[depth] += replies
         for reply_id in replies:
             build_depth_dict(depth + 1, reply_id)
-    
+
     build_depth_dict(1, comment)
     return dict(comments_by_depth)
+
 
 def get_most_replied_comments(reply_dicts):
     """
     Get the most replied-to comments.
-    
+
     Args:
         reply_dicts: A list of dictionaries, where the key represents depth and
             the values represent the comment_id of each comment at that depth.
-        
+
     Returns:
         A list of comment_dict(s) for the comment(s) with the greatest number
             of replies.
@@ -83,6 +85,7 @@ def get_most_replied_comments(reply_dicts):
 
     return [comment_dict for comment_dict in reply_dicts if
             max(comment_dict.keys()) == max_depth]
+
 
 def analyze_sentiment(comment_body):
     """
@@ -108,6 +111,7 @@ def analyze_sentiment(comment_body):
 
     return sum(results) / len(results)
 
+
 def avg_depth_sentiment(comment_df, depth, comments_by_depth):
     """
     Return average sentiment of all comments of the same depth.
@@ -129,7 +133,7 @@ def avg_depth_sentiment(comment_df, depth, comments_by_depth):
         for comment_id in comment_ids:
             try:
                 tokenized_comment = comment_df['tokenized_comment'].values[
-                    comment_df['comment_id'] == comment_id][0].split(',')
+                    comment_df['comment_id'] == comment_id][0].split('\\')
             # Catches invalid comments (NaN)
             except AttributeError:
                 pass
@@ -137,15 +141,16 @@ def avg_depth_sentiment(comment_df, depth, comments_by_depth):
 
     return sum(sentiments) / len(sentiments)
 
+
 def get_sentiment_dicts(comment_df, reply_dicts):
     """
     Map each depth to the average sentiment of the comments at that depth.
-    
+
     Args:
         comment_df: DataFrame containing cleaned comment data.
         reply_dicts: A list of dictionaries, where the key represents depth and
             the values represent the comment_id of each comment at that depth.
-        
+
     Returns:
         sentiment_dicts: A list of dictionaries where the keys are the
         nesting depths for the comment replies and the values are a tuple of
@@ -157,9 +162,10 @@ def get_sentiment_dicts(comment_df, reply_dicts):
         sentiment_dict = defaultdict(float)
         for depth in comment_dict.keys():
             sentiment_dict[depth] = (avg_depth_sentiment(comment_df,
-                depth, comment_dict), len(comment_dict[depth]))
+                                                         depth, comment_dict), len(comment_dict[depth]))
         sentiment_dicts.append(dict(sentiment_dict))
     return sentiment_dicts
+
 
 def analyze_subreddit(subreddit):
     """
@@ -185,11 +191,13 @@ def analyze_subreddit(subreddit):
             'comment_parent_id'][0])].tolist()
 
     # Create dictionaries for each top level comment with all of their
-    # replies organized by depth.    
-    reply_dicts = [create_reply_dict(sub_df, comment) for comment in 
+    # replies organized by depth.
+    reply_dicts = [create_reply_dict(sub_df, comment) for comment in
                    top_level_comments]
 
     # Only use the comments with the deepest nesting of replies
     reply_dicts = get_most_replied_comments(reply_dicts)
+
+    print(sub_df['tokenized_comment'].head())
 
     return get_sentiment_dicts(sub_df, reply_dicts)

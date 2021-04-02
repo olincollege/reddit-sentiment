@@ -3,10 +3,11 @@ Pre-process data for sentiment analysis.
 """
 import emoji
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import RegexpTokenizer
+from nltk.tokenize import RegexpTokenizer, sent_tokenize
 import pandas as pd
 import nltk
 nltk.download('wordnet')
+nltk.download('punkt')
 
 
 def clean_comment(comment):
@@ -18,21 +19,37 @@ def clean_comment(comment):
 
     Returns:
         lemmatized_tokens: A string containing the prepared text of comment
-        with words separated by commas.
+        with sentences separated by backslashes.
     """
     # Remove emojis from comment
     comment = emoji.get_emoji_regexp().sub(u'', comment)
     # Tokenize comment (split into list of words) and remove links
+    tokenized_comment = sent_tokenize(comment)
+    
+    lemmatized_comment = [lemmatize_sentence(comment) for comment in 
+                          tokenized_comment]
+    
+    return '\\'.join(lemmatized_comment)
+
+def lemmatize_sentence(sentence):
+    """
+    Lemmatizes a sentence.
+    
+    Args:
+        sentence: A string representing a tokenized sentence.
+    
+    Returns:
+        A lemmatized sentence.
+    """
     tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|http\S+')
-    tokenized_comment = tokenizer.tokenize(comment)
+    words = tokenizer.tokenize(sentence);
     # Make all words lowercase
-    tokenized_comment = [word.lower() for word in tokenized_comment]
+    words = [word.lower() for word in words]
     # Lemmatize word to change them to the stem words
     lemmatizer = WordNetLemmatizer()
     lemmatized_tokens = [lemmatizer.lemmatize(word)
-                         for word in tokenized_comment]
-    return ','.join(lemmatized_tokens)
-
+                         for word in words]
+    return ' '.join(lemmatized_tokens)
 
 def store_tokenized_data(subreddit_list):
     """
