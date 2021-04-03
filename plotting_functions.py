@@ -7,7 +7,7 @@ import seaborn as sns
 
 def sentiment_line(subreddit, sentiment_dicts):
     for comment_dict in sentiment_dicts:
-        plt.plot(comment_dict.keys(), [value[0] for value in comment_dict.values()])
+        sns.lineplot(x=comment_dict.keys(), y=[value[0] for value in comment_dict.values()])
     plt.xlabel('Comment depth')
     plt.ylabel('Average compound sentiment score')
     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Analysis')
@@ -34,7 +34,7 @@ def get_sentiment_difference(sentiment_dicts):
 def sentiment_difference_line(subreddit, sentiment_dicts):
     difference_dicts = get_sentiment_difference(sentiment_dicts)
     for difference_dict in difference_dicts:
-        plt.plot(difference_dict.keys(), [value[0] for value in difference_dict.values()])
+        sns.lineplot(x=difference_dict.keys(), y=[value[0] for value in difference_dict.values()])
     plt.xlabel('Comment depth')
     plt.ylabel('Average compound sentiment score change')
     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change Over Depth')
@@ -112,3 +112,6 @@ def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     plt.xlabel('Comment depth')
     plt.ylabel('Average sentiment score change')
     plt.show()
+
+def bargraph_comparison(subreddit, sentiment_dicts):
+    pass
