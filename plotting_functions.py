@@ -34,9 +34,9 @@ def get_sentiment_difference(sentiment_dicts):
 def sentiment_difference_line(subreddit, sentiment_dicts):
     difference_dicts = get_sentiment_difference(sentiment_dicts)
     for difference_dict in difference_dicts:
-        plt.plot(difference_dict.keys(), [value[0] for value in difference_dict.values()], '--')
+        plt.plot(difference_dict.keys(), [value[0] for value in difference_dict.values()])
     plt.xlabel('Comment depth')
-    plt.ylabel('Average compound sentiment score')
+    plt.ylabel('Average compound sentiment score change')
     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change Over Depth')
     plt.show()
 
@@ -46,39 +46,69 @@ def sentiment_difference_bubble(subreddit, sentiment_dicts):
          sns.scatterplot(x=difference_dict.keys(), y=[value[0] for value in difference_dict.values()], 
                          size=[value[1] for value in difference_dict.values()], alpha = 0.75, legend=False, sizes=(20, 2000))
     plt.xlabel('Comment depth')
-    plt.ylabel('Average compound sentiment score')
+    plt.ylabel('Average compound sentiment score change')
     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change Over Depth')
     plt.show()
 
 def get_sentiment_categorized(sentiment_dicts):
-    categorized_dicts = []
+    categorized_dicts = [[],[],[]]
     for comment_dict in sentiment_dicts:
-        shift = 0
         if comment_dict[0][0] < 0:
-            shift = -1 - comment_dict[0][0]
+            categorized_dicts[0].append(comment_dict)
         elif comment_dict[0][0] > 0:
-            shift = 1 - comment_dict[0][0]
-        categorized_dict = {key: (0,0) for key in comment_dict.keys()}
-        for key in categorized_dict.keys():
-            categorized_dict[key] = (comment_dict[key][0] + shift, comment_dict[key][1])   
-        categorized_dicts.append(categorized_dict)
+            categorized_dicts[2].append(comment_dict)
+        else:
+            categorized_dicts[1].append(comment_dict)
+    categorized_dicts[0] = get_sentiment_difference(categorized_dicts[0])
+    categorized_dicts[1] = get_sentiment_difference(categorized_dicts[1])
+    categorized_dicts[2] = get_sentiment_difference(categorized_dicts[2])
     return categorized_dicts    
 
 def sentiment_categorized_line(subreddit, sentiment_dicts):
     categorized_dicts = get_sentiment_categorized(sentiment_dicts)
-    for categorized_dict in categorized_dicts:
-        plt.plot(categorized_dict.keys(), [value[0] for value in categorized_dict.values()], '--')
+    fig, axs = plt.subplots(1,3,figsize=(12,4),sharey=True)
+    for categorized_dict in categorized_dicts[0]:
+        axs[0].plot(categorized_dict.keys(), [value[0] for value in categorized_dict.values()])
+    axs[0].set_title('Negative Top Level Comment')
+
+    for categorized_dict in categorized_dicts[1]:
+        axs[1].plot(categorized_dict.keys(), [value[0] for value in categorized_dict.values()])    
+    axs[1].set_title('Neutral Top Level Comment')
+
+    for categorized_dict in categorized_dicts[2]:
+        axs[2].plot(categorized_dict.keys(), [value[0] for value in categorized_dict.values()])
+    axs[2].set_title('Positive Top Level Comment')
+
+    fig.add_subplot(111, frameon=False)
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    plt.grid(False)
+    fig.suptitle(f'r/{subreddit} Reply Chain Sentiment Change Categorized by Top Level Comment Polarity')
     plt.xlabel('Comment depth')
-    plt.ylabel('Average compound sentiment score')
-    plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change Based on Initial Sentiment')
+    plt.ylabel('Average sentiment score change')
     plt.show()
 
 def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     categorized_dicts = get_sentiment_categorized(sentiment_dicts)
-    for categorized_dict in categorized_dicts:
-         sns.scatterplot(x=categorized_dict.keys(), y=[value[0] for value in categorized_dict.values()], 
+    fig, axs = plt.subplots(1,3,figsize=(12,4),sharey=True)
+    for categorized_dict in categorized_dicts[0]:
+         sns.scatterplot(ax=axs[0], x=categorized_dict.keys(), y=[value[0] for value in categorized_dict.values()], 
                          size=[value[1] for value in categorized_dict.values()], alpha = 0.75, legend=False, sizes=(20, 2000))
+    axs[0].set_title('Negative Top Level Comment')
+
+    for categorized_dict in categorized_dicts[1]:
+         sns.scatterplot(ax=axs[1], x=categorized_dict.keys(), y=[value[0] for value in categorized_dict.values()], 
+                         size=[value[1] for value in categorized_dict.values()], alpha = 0.75, legend=False, sizes=(20, 2000))
+    axs[1].set_title('Neutral Top Level Comment')
+
+    for categorized_dict in categorized_dicts[2]:
+         sns.scatterplot(ax=axs[2], x=categorized_dict.keys(), y=[value[0] for value in categorized_dict.values()], 
+                         size=[value[1] for value in categorized_dict.values()], alpha = 0.75, legend=False, sizes=(20, 2000))
+    axs[2].set_title('Positive Top Level Comment')
+
+    fig.add_subplot(111, frameon=False)
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    plt.grid(False)
+    fig.suptitle(f'r/{subreddit} Reply Chain Sentiment Change Categorized by Top Level Comment Polarity')
     plt.xlabel('Comment depth')
-    plt.ylabel('Average compound sentiment score')
-    plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change Based on Initial Sentiment')
+    plt.ylabel('Average sentiment score change')
     plt.show()
