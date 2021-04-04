@@ -24,15 +24,37 @@ get_find_replies_cases = [
                      "f0zhdut"])
 ]
 
-
 get_create_reply_dict_cases = [
+    
     # Check that a comment with no replies is mapped to zero.
-    (df, "“Late” is relative. And even besides that, it’s not like I wasn’t aware that I found cute girls cute much earlier. There’s a difference between children noticing each other and having a concrete understating of sexual mechanisms. Sounds like your parents needed to supervise you closer.", {
-     0: ["“Late” is relative. And even besides that, it’s not like I wasn’t aware that I found cute girls cute much earlier. There’s a difference between children noticing each other and having a concrete understating of sexual mechanisms. Sounds like your parents needed to supervise you closer."]}),
+    (df, " ".join(("“Late” is relative. And even besides that, it’s not",
+                    "like I wasn’t aware that I found cute girls cute much",
+                    "earlier. There’s a difference between children",
+                    "noticing each other and having a concrete",
+                    "understating of sexual mechanisms. Sounds like your",
+                    "parents needed to supervise you closer.")), {0: 
+                    [" ".join(("“Late” is relative. And even besides that,",
+                             "it’s not like I wasn’t aware that I found",
+                             "cute girls cute much earlier. There’s a",
+                             "difference between children noticing each",
+                             "other and having a concrete understating of",
+                             "sexual mechanisms. Sounds like your parents",
+                             "needed to supervise you closer."))]}),
 
     # Check that a top-level comment with replies is correctly mapped.
-    (df, "How is locking him in the impetus for that to occur? The kid already had free reign of the house. The OP from that thread said they just gave the kid games to play to keep them busy. He was already free to roam around and get a drink. At any point, he could have downed liquid detergent, juggled with knives or stuck his head in the toilet.", {
-     0: ["How is locking him in the impetus for that to occur? The kid already had free reign of the house. The OP from that thread said they just gave the kid games to play to keep them busy. He was already free to roam around and get a drink. At any point, he could have downed liquid detergent, juggled with knives or stuck his head in the toilet."]})
+    (df, " ".join(("How is locking him in the impetus for that to occur? The",
+                   "kid already had free reign of the house. The OP from that",
+                   "thread said they just gave the kid games to play to keep",
+                   "them busy. He was already free to roam around and get a",
+                   "drink. At any point, he could have downed liquid",
+                   "detergent, juggled with knives or stuck his head in the",
+                   "toilet.")), {0: [" ".join(("How is locking him in the",
+                    "impetus for that to occur? The kid already had free",
+                    "reign of the house. The OP from that thread said they",
+                    "just gave the kid games to play to keep them busy. He",
+                    "was already free to roam around and get a drink. At any",
+                    "point, he could have downed liquid detergent, juggled",
+                    "with knives or stuck his head in the toilet."))]})
 ]
 
 get_most_replied_comments_cases = [
@@ -57,9 +79,9 @@ get_analyze_sentiment_cases = [
     "today today"
 ]
 
+
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
-
 
 @pytest.mark.parametrize("comment_df, comment_id, child_reply_ids",
                          get_find_replies_cases)
