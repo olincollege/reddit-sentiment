@@ -4,6 +4,7 @@ reddit-sentiment-analysis notebook.
 """
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 def sentiment_line(subreddit, sentiment_dicts):
     for comment_dict in sentiment_dicts:
@@ -113,14 +114,14 @@ def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     plt.ylabel('Average sentiment score change')
     plt.show()
 
-# def bargraph_comparison(subreddit, sentiment_dicts):
-# #     for comment_dict in sentiment_dicts:
-#     comment_dict = sentiment_dicts[1]
-#     print(comment_dict)
-#     average = comment_dict.values[0]
-#     print(average)
-#     sns.barplot(x=0, y=average)
-#     plt.xlabel('Comment depth')
-#     plt.ylabel('Average compound sentiment score')
-#     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Analysis')
-#     plt.show()
+def sentiment_distribution_violin(subreddit, sentiment_dict):
+    comment_df = pd.DataFrame(columns = ['depth', 'sentiment'])
+    for depth in sentiment_dict.keys():
+        for sentiment in sentiment_dict[depth]:
+            comment_df = comment_df.append(pd.DataFrame({'depth': depth,
+                                    'sentiment': sentiment}, index=[0]))
+    
+    sns.violinplot(x = comment_df['depth'], y = comment_df['sentiment'])
+    plt.xlabel('Comment depth')
+    plt.ylabel('Compound Sentiment Score')
+    plt.title(f'A r/{subreddit} Comment Thread Sentiment Distribution by Depth')
