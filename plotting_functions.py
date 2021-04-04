@@ -113,5 +113,14 @@ def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     plt.ylabel('Average sentiment score change')
     plt.show()
 
-def bargraph_comparison(subreddit, sentiment_dicts):
-    pass
+# def bargraph_comparison(subreddit, sentiment_dicts):
+# #     for comment_dict in sentiment_dicts:
+#     comment_dict = sentiment_dicts[1]
+#     print(comment_dict)
+#     average = comment_dict.values[0]
+#     print(average)
+#     sns.barplot(x=0, y=average)
+#     plt.xlabel('Comment depth')
+#     plt.ylabel('Average compound sentiment score')
+#     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Analysis')
+#     plt.show()
