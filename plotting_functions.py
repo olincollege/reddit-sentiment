@@ -48,6 +48,19 @@ def sentiment_bubble(subreddit, sentiment_dicts):
     plt.show()
             
 def get_sentiment_difference(sentiment_dicts):
+    """
+    Return the difference between average sentiments of adjacent depths.
+    
+    Args:
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    
+    Returns:
+        difference_dicts: A list of dictionaries where the keys are depths and
+        the values are normalized differences in sentiment.
+    """
     difference_dicts = []
     for comment_dict in sentiment_dicts:
         difference_dict = {key: (0,0) for key in comment_dict.keys()}
@@ -58,6 +71,17 @@ def get_sentiment_difference(sentiment_dicts):
     return difference_dicts
             
 def sentiment_difference_line(subreddit, sentiment_dicts):
+    """
+    Plot a line plot with depth on the x axis and sentiment, normalized so the
+    first comment's sentiment is 0, on the y axis.
+
+    Args:
+        subreddit: A string representing the name of the subreddit.
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    """
     difference_dicts = get_sentiment_difference(sentiment_dicts)
     for difference_dict in difference_dicts:
         sns.lineplot(x=difference_dict.keys(), y=[value[0] for value in 
@@ -69,6 +93,17 @@ def sentiment_difference_line(subreddit, sentiment_dicts):
     plt.show()
 
 def sentiment_difference_bubble(subreddit, sentiment_dicts):
+    """
+    Plot a bubble plot with depth on the x axis and sentiment, normalized so
+    the first comment's sentiment is 0, on the y axis.
+
+    Args:
+        subreddit: A string representing the name of the subreddit.
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    """
     difference_dicts = get_sentiment_difference(sentiment_dicts)
     for difference_dict in difference_dicts:
          sns.scatterplot(x=difference_dict.keys(), y=[value[0] for value in 
@@ -82,6 +117,22 @@ def sentiment_difference_bubble(subreddit, sentiment_dicts):
     plt.show()
 
 def get_sentiment_categorized(sentiment_dicts):
+    """
+    Categorize a list of sentiment_dicts into starting with a comment that has
+    negative, neutral, or positive sentiment.
+    
+    Args:
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    
+    Returns:
+        categorized_dicts: A list of lists of dictionaries, where there is one
+        list each for negative, neutral, and positive starting sentiment, and
+        the keys of the dictionaries are depths and the values are differences
+        in sentiment with the first comment normalized to zero.
+    """
     categorized_dicts = [[],[],[]]
     for comment_dict in sentiment_dicts:
         if comment_dict[0][0] < 0:
@@ -96,6 +147,18 @@ def get_sentiment_categorized(sentiment_dicts):
     return categorized_dicts    
 
 def sentiment_categorized_line(subreddit, sentiment_dicts):
+    """
+    Plot line plots with depth on the x-axis and sentiment on the y-axis, with
+    one plot each for comments that start with negative, neutral, and positive
+    sentiment, with the first comment normalized to zero sentiment.
+    
+    Args:
+        subreddit: A string representing the name of the subreddit.
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    """
     categorized_dicts = get_sentiment_categorized(sentiment_dicts)
     fig, axs = plt.subplots(1,3,figsize=(12,4),sharey=True)
     for categorized_dict in categorized_dicts[0]:
@@ -124,6 +187,20 @@ def sentiment_categorized_line(subreddit, sentiment_dicts):
     plt.show()
 
 def sentiment_categorized_bubble(subreddit, sentiment_dicts):
+    """
+    Plot bubble plots with depth on the x-axis and sentiment on the y-axis,
+    with one plot each for comments that start with negative, neutral, and
+    positive sentiment, with the first comment normalized to zero sentiment.
+    The size of the bubbles correspond to the number of comments at that depth
+    for that thread.
+    
+    Args:
+        subreddit: A string representing the name of the subreddit.
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are a tuple of
+        the average compound sentiment scores for that depth and the number
+        of comments in that depth.
+    """
     categorized_dicts = get_sentiment_categorized(sentiment_dicts)
     fig, axs = plt.subplots(1,3,figsize=(12,4),sharey=True)
     for categorized_dict in categorized_dicts[0]:
@@ -158,6 +235,17 @@ def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     plt.show()
 
 def sentiment_distribution_violin(subreddit, sentiment_dict):
+    """
+    Create violin plots where the x-axis is depth and the y-axis is the
+    compound average sentiment score for that depth.
+    
+    Args:
+        subreddit: A string representing the name of the subreddit.
+        sentiment_dict: A dictionary where the keys are the nesting depths for
+        the comment replies and the values are a tuple of the average compound
+        sentiment scores for that depth and the number of comments in that 
+        depth.
+    """
     comment_df = pd.DataFrame(columns = ['depth', 'sentiment'])
     for depth in sentiment_dict.keys():
         for sentiment in sentiment_dict[depth]:
