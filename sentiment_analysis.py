@@ -164,9 +164,10 @@ def get_sentiment_by_depth(comment_df, reply_dicts):
         sentiment_dict = defaultdict(float)
         for depth in comment_dict.keys():
             sentiment_dict[depth] = (avg_depth_sentiment(comment_df,
-                                    depth, comment_dict), len(comment_dict[depth]))
+                                                         depth, comment_dict), len(comment_dict[depth]))
         sentiment_dicts.append(dict(sentiment_dict))
     return sentiment_dicts
+
 
 def get_sentiment_lists(comment_df, reply_dicts):
     sentiment_dicts = []
@@ -175,14 +176,15 @@ def get_sentiment_lists(comment_df, reply_dicts):
         for depth in comment_dict.keys():
             for comment_id in comment_dict[depth]:
                 try:
-                    comment = comment_df['tokenized_comment'].values[comment_df['comment_id'] 
-                    == comment_id][0].split('\\')
+                    comment = comment_df['tokenized_comment'].values[comment_df['comment_id']
+                                                                     == comment_id][0].split('\\')
                 # Catches invalid comments (NaN)
                 except AttributeError:
                     pass
                 sentiment_dict[depth].append(analyze_sentiment(comment))
         sentiment_dicts.append(dict(sentiment_dict))
-    return sentiment_dicts    
+    return sentiment_dicts
+
 
 def analyze_subreddit_by_depth(subreddit):
     """
@@ -216,6 +218,7 @@ def analyze_subreddit_by_depth(subreddit):
     reply_dicts = get_most_replied_comments(reply_dicts)
 
     return get_sentiment_by_depth(sub_df, reply_dicts)
+
 
 def analyze_subreddit_distribution(subreddit):
     # Read in cleaned subreddit DataFrame
