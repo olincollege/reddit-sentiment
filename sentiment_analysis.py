@@ -104,9 +104,8 @@ def analyze_sentiment(comment_body):
     sia = SIA()
     results = []
 
-    for word in comment_body:
-        pol_score = sia.polarity_scores(word)
-        pol_score['words'] = word
+    for sentence in comment_body:
+        pol_score = sia.polarity_scores(sentence)
         results.append(pol_score['compound'])
 
     try:
