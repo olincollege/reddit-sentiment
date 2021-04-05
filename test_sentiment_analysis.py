@@ -1,7 +1,6 @@
 """
 Unit tests for sentiment_analysis.py
 """
-from collections import Counter
 import pytest
 import pandas as pd
 

@@ -1,7 +1,6 @@
 """
 Unit tests for data_cleaning.py
 """
-from collections import Counter
 import pytest
 
 from data_cleaning import (

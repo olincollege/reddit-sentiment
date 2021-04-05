@@ -25,19 +25,20 @@ def clean_comment(comment):
     comment = emoji.get_emoji_regexp().sub(u'', comment)
     # Tokenize comment (split into list of words) and remove links
     tokenized_comment = sent_tokenize(comment)
-    
-    lemmatized_comment = [lemmatize_sentence(comment) for comment in 
+
+    lemmatized_comment = [lemmatize_sentence(comment) for comment in
                           tokenized_comment]
-    
+
     return '\\'.join(lemmatized_comment)
+
 
 def lemmatize_sentence(sentence):
     """
     Lemmatizes a sentence.
-    
+
     Args:
         sentence: A string representing a tokenized sentence.
-    
+
     Returns:
         A lemmatized sentence.
     """
@@ -50,6 +51,7 @@ def lemmatize_sentence(sentence):
     lemmatized_tokens = [lemmatizer.lemmatize(word)
                          for word in words]
     return ' '.join(lemmatized_tokens)
+
 
 def store_tokenized_data(subreddit_list):
     """
