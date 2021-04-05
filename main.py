@@ -16,7 +16,7 @@ ACCOUNT_SECRET = ''  # Account secret for reddit app access
 
 # Scrape comments from the top post of each subreddit
 reddit_scraper.scrape_reddit_comments(ACCOUNT_ID, ACCOUNT_SECRET,
-                                    subreddit_list)
+                                      subreddit_list)
 
 # Create and store new files with cleaned and tokenized comments
 data_cleaning.store_tokenized_data(subreddit_list)
