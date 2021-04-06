@@ -1,5 +1,6 @@
 """
 Unit tests for data_cleaning.py
+Make sure data_cleaning.py has processed files before running.
 """
 import pytest
 import os.path

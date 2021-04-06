@@ -69,14 +69,13 @@ get_most_replied_comments_cases = [
         1: "first comment", 2: "whoa look replies!"}])
 ]
 
-# Try and get pos/neg for this rly well
 get_analyze_sentiment_cases = [
     # Check that an empty string returns 0.
-    "",
+    ("", "neutral"),
     # Check that a neutral word returns 0.
-    "today",
+    ("today", "neutral"),
     # Check that multiple neutral words return 0.
-    "today today"
+    ("today today", "neutral")
 ]
 
 # make sure expected depth is equal to actual depth -- test keys/non-sentiment parts
@@ -108,9 +107,11 @@ def test_create_reply_dict(comment_df, comment, comments_by_depth):
     Args:
         comment_df: DataFrame containing, at minimum, comment_id and
             comment_parent_id data.
-        comment: A string representing the cleaned contents of the parent comment.
+        comment: A string representing the cleaned contents of the parent
+            comment.
         comments_by_depth: A dictionary where the keys are depths and the
-            values are lists of strings containing the comment texts at that depth.
+            values are lists of strings containing the comment texts at that
+            depth.
     """
     assert create_reply_dict(comment_df, comment) == comments_by_depth
 
@@ -130,14 +131,20 @@ def test_most_replied_comments(reply_dicts, most_replied_comment):
     assert get_most_replied_comments(reply_dicts) == most_replied_comment
 
 
-@pytest.mark.parametrize("comment_body", get_analyze_sentiment_cases)
-def test_analyze_sentiment(comment_body):
+@pytest.mark.parametrize("comment_body, expected_sentiment", 
+                         get_analyze_sentiment_cases)
+def test_analyze_sentiment(comment_body, expected_sentiment):
     """
     Test that sentiment analysis works as expected.
 
     Args:
-        comment_body: String representing the body text of the comment.
-        score: A float representing the average compound polarity score for the
-        comment.
+        comment_body: A string representing the body text of the comment.
+        expected_sentiment: A string representing the expected sentiment of the
+            comment_body, being either positive, neutral, or negative.
     """
-    assert analyze_sentiment(comment_body) == 0
+    if expected_sentiment == "positive":
+        assert analyze_sentiment(comment_body) > 0
+    elif expected_sentiment == "negative":
+        assert analyze_sentiment(comment_body) < 0
+    else:
+        assert analyze_sentiment(comment_body) == 0
