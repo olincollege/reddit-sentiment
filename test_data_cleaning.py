@@ -2,6 +2,7 @@
 Unit tests for data_cleaning.py
 """
 import pytest
+import os.path
 
 from data_cleaning import (
     clean_comment,
@@ -37,9 +38,18 @@ get_lemmatized_sentence_cases = [
     ("the laws of physics", "the law of physic")
 ]
 
+get_store_tokenized_data_cases = [
+    # Check that an empty string does not exist as a file.
+    ("cleaneddata", "", False),
+    # Check that data is not stored in the wrong directory.
+    ("punkt", "AskReddit", False),
+    # Check that data is stored in the correct directory.
+    ("cleaneddata", "AskReddit", True)
+]
+
+
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
-
 
 @pytest.mark.parametrize("raw_comment, cleaned_comment", 
                          get_clean_comment_cases)
@@ -65,3 +75,19 @@ def test_lemmatize_sentnece(comment, lemmatized_comment):
         lemmatized_comment: A string representing the lemmatized comment.
     """
     assert lemmatize_sentence(comment) == lemmatized_comment
+
+@pytest.mark.parametrize("directory, subreddit, expected_boolean", 
+                         get_store_tokenized_data_cases)
+def test_store_tokenized_data(directory, subreddit, expected_boolean):
+    """
+    Test that data is stored in the correct directory with the correct filename
+    
+    Args:
+        directory: A string representing the directory name.
+        subreddit: A string representing the name of the subreddit whose data
+            is being stored.
+        expected_boolean: A Boolean value representing the expected outcome
+            (True if a file should exist, False if not)
+    """
+    path = './' + directory + '/' + subreddit +'_comments_cleaned.csv'
+    assert os.path.isfile(path) == expected_boolean

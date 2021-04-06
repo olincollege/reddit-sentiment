@@ -177,7 +177,7 @@ def get_sentiment_lists(comment_df, reply_dicts):
             for comment_id in comment_dict[depth]:
                 try:
                     comment = comment_df['tokenized_comment'].values[comment_df['comment_id']
-                                                                     == comment_id][0].split('\\')
+                                                == comment_id][0].split('\\')
                 # Catches invalid comments (NaN)
                 except AttributeError:
                     pass

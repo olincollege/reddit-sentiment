@@ -69,6 +69,7 @@ get_most_replied_comments_cases = [
         1: "first comment", 2: "whoa look replies!"}])
 ]
 
+# Try and get pos/neg for this rly well
 get_analyze_sentiment_cases = [
     # Check that an empty string returns 0.
     "",
@@ -78,6 +79,7 @@ get_analyze_sentiment_cases = [
     "today today"
 ]
 
+# make sure expected depth is equal to actual depth -- test keys/non-sentiment parts
 
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
