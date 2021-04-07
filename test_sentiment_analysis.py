@@ -73,9 +73,18 @@ get_analyze_sentiment_cases = [
     # Check that an empty string returns 0.
     ("", "neutral"),
     # Check that a neutral word returns 0.
-    ("today", "neutral"),
+    (["today"], "neutral"),
     # Check that multiple neutral words return 0.
-    ("today today", "neutral")
+    (["today", "today"], "neutral"),
+    # Check that a positive word is positive.
+    (["acceptance"], "positive"),
+    # Check that a negative word is negative.
+    (["bad"], "negative"),
+    # Check that positive words are positive.
+    (["Woohoo!", "Almost done :)"], "positive"),
+    # Check that negative words are negative.
+    (["I did not have fun writing these unit tests", "I am sad"], "negative"),
+    # Crowdsourced unit tests below!
 ]
 
 # make sure expected depth is equal to actual depth -- test keys/non-sentiment parts

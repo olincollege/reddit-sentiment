@@ -95,7 +95,7 @@ def analyze_sentiment(comment_body):
     word in the comment text and finds the average score for the comment.
 
     Args:
-        comment_body: String representing the body text of the comment.
+        comment_body: List of strings representing the text of the comment.
 
     Returns:
         A float representing the average compound polarity score for the
@@ -109,6 +109,7 @@ def analyze_sentiment(comment_body):
         results.append(pol_score['compound'])
 
     try:
+        print(sum(results))
         return sum(results) / len(results)
     except ZeroDivisionError:
         return 0
@@ -164,20 +165,33 @@ def get_sentiment_by_depth(comment_df, reply_dicts):
         sentiment_dict = defaultdict(float)
         for depth in comment_dict.keys():
             sentiment_dict[depth] = (avg_depth_sentiment(comment_df,
-                                                         depth, comment_dict), len(comment_dict[depth]))
+                                depth, comment_dict), len(comment_dict[depth]))
         sentiment_dicts.append(dict(sentiment_dict))
     return sentiment_dicts
 
 
 def get_sentiment_lists(comment_df, reply_dicts):
+    """
+    Get lists of dictionaries mapping  depth to comment sentiment.
+    
+    Args:
+        comment_df: DataFrame containing cleaned comment data.
+        reply_dicts: A list of dictionaries, where the key represents depth and
+            the values represent the comment_id of each comment at that depth.
+    
+    Returns:
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are floats
+        representing the sentiment of comments at that depth.
+    """
     sentiment_dicts = []
     for comment_dict in reply_dicts:
         sentiment_dict = defaultdict(list)
         for depth in comment_dict.keys():
             for comment_id in comment_dict[depth]:
                 try:
-                    comment = comment_df['tokenized_comment'].values[comment_df['comment_id']
-                                                == comment_id][0].split('\\')
+                    comment = comment_df['tokenized_comment'].values[
+                        comment_df['comment_id'] == comment_id][0].split('\\')
                 # Catches invalid comments (NaN)
                 except AttributeError:
                     pass
@@ -221,6 +235,17 @@ def analyze_subreddit_by_depth(subreddit):
 
 
 def analyze_subreddit_distribution(subreddit):
+    """
+    Analyze the distribution of sentiment scores.
+    
+    Args:
+        subreddit: A string representing the subreddit name.
+    
+    Returns:
+        sentiment_dicts: A list of dictionaries where the keys are the
+        nesting depths for the comment replies and the values are floats
+        representing the sentiment of comments at that depth.
+    """
     # Read in cleaned subreddit DataFrame
     sub_df = pd.read_csv('./cleaneddata/' + subreddit +
                          '_comments_cleaned.csv')
