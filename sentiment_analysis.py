@@ -109,7 +109,6 @@ def analyze_sentiment(comment_body):
         results.append(pol_score['compound'])
 
     try:
-        print(sum(results))
         return sum(results) / len(results)
     except ZeroDivisionError:
         return 0

@@ -263,7 +263,7 @@ def test_get_sentiment_lists(comment_df, reply_dicts):
         reply_dicts: A list of dictionaries, where the key represents depth and
             the values represent the comment_id of each comment at that depth.
     """
-    assert get_sentiment_lists(comment_df, reply_dicts)
+    assert get_sentiment_lists(comment_df, reply_dicts) == []
 
 @pytest.mark.parametrize("subreddit", get_analyze_subreddit_by_depth_cases)
 def test_analyze_subreddit_by_depth(subreddit):
@@ -277,9 +277,9 @@ def test_analyze_subreddit_by_depth(subreddit):
     depths = []
     scores = []
     tuples = analyze_subreddit_by_depth(subreddit)[0].values()
-    for tuple in tuples:
-        depths.append(tuple[1])
-        scores.append(tuple[0])
+    for tuple_output in tuples:
+        depths.append(tuple_output[1])
+        scores.append(tuple_output[0])
     assert depths == [1, 2, 3, 1] and all(isinstance(score, float) for score
                                                                     in scores)
 
