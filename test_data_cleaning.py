@@ -2,8 +2,8 @@
 Unit tests for data_cleaning.py
 Make sure data_cleaning.py has processed files before running.
 """
-import pytest
 import os.path
+import pytest
 
 from data_cleaning import (
     clean_comment,
@@ -52,7 +52,7 @@ get_store_tokenized_data_cases = [
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
 
-@pytest.mark.parametrize("raw_comment, cleaned_comment", 
+@pytest.mark.parametrize("raw_comment, cleaned_comment",
                          get_clean_comment_cases)
 def test_clean_comment(raw_comment, cleaned_comment):
     """
@@ -60,29 +60,31 @@ def test_clean_comment(raw_comment, cleaned_comment):
 
     Args:
         raw_comment: A string representing a Reddit comment.
-        cleaned_comment: A string representing a cleaned, tokenized, and 
+        cleaned_comment: A string representing a cleaned, tokenized, and
             lemmatized Reddit comment.
     """
     assert clean_comment(raw_comment) == cleaned_comment
 
-@pytest.mark.parametrize("comment, lemmatized_comment", 
+
+@pytest.mark.parametrize("comment, lemmatized_comment",
                          get_lemmatized_sentence_cases)
 def test_lemmatize_sentnece(comment, lemmatized_comment):
     """
     Test that comments are correctly lemmatized.
-    
+
     Args:
         comment: A string containing the text to be lemmatized.
         lemmatized_comment: A string representing the lemmatized comment.
     """
     assert lemmatize_sentence(comment) == lemmatized_comment
 
-@pytest.mark.parametrize("directory, subreddit, expected_boolean", 
+
+@pytest.mark.parametrize("directory, subreddit, expected_boolean",
                          get_store_tokenized_data_cases)
 def test_store_tokenized_data(directory, subreddit, expected_boolean):
     """
     Test that data is stored in the correct directory with the correct filename
-    
+
     Args:
         directory: A string representing the directory name.
         subreddit: A string representing the name of the subreddit whose data
@@ -90,5 +92,5 @@ def test_store_tokenized_data(directory, subreddit, expected_boolean):
         expected_boolean: A Boolean value representing the expected outcome
             (True if a file should exist, False if not)
     """
-    path = './' + directory + '/' + subreddit +'_comments_cleaned.csv'
+    path = './' + directory + '/' + subreddit + '_comments_cleaned.csv'
     assert os.path.isfile(path) == expected_boolean

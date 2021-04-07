@@ -34,8 +34,8 @@ def create_reply_dict(comment_df, comment):
         comment: A string representing the cleaned contents of the parent comment.
 
     Returns:
-        comments_by_depth: A dictionary where the keys are depths and the 
-            values are lists of strings containing the comment texts at that 
+        comments_by_depth: A dictionary where the keys are depths and the
+            values are lists of strings containing the comment texts at that
             depth.
     """
     comments_by_depth = defaultdict(list)
@@ -120,10 +120,12 @@ def avg_depth_sentiment(comment_df, depth, comments_by_depth):
     Return average sentiment of all comments of the same depth.
 
     Args:
+        comment_df: DataFrame containing comment thread information.
         depth: An int representing the depth (nesting level) at which to
             average the reply sentiment scores.
         comments_by_depth: A dictionary representing the replies to a comment
-        with the nesting depth as the keys and lists of comment ids as values.
+        with the nesting depth as integer keys and lists of string comment ids
+        as values.
 
     Returns:
         A float representing the average compound sentiment score of
@@ -165,20 +167,20 @@ def get_sentiment_by_depth(comment_df, reply_dicts):
         sentiment_dict = defaultdict(float)
         for depth in comment_dict.keys():
             sentiment_dict[depth] = (avg_depth_sentiment(comment_df,
-                                depth, comment_dict), len(comment_dict[depth]))
+                            depth, comment_dict), len(comment_dict[depth]))
         sentiment_dicts.append(dict(sentiment_dict))
     return sentiment_dicts
 
 
 def get_sentiment_lists(comment_df, reply_dicts):
     """
-    Get lists of dictionaries mapping  depth to comment sentiment.
-    
+    Get lists of dictionaries mapping depth to comment sentiment.
+
     Args:
         comment_df: DataFrame containing cleaned comment data.
         reply_dicts: A list of dictionaries, where the key represents depth and
             the values represent the comment_id of each comment at that depth.
-    
+
     Returns:
         sentiment_dicts: A list of dictionaries where the keys are the
         nesting depths for the comment replies and the values are floats
@@ -237,10 +239,10 @@ def analyze_subreddit_by_depth(subreddit):
 def analyze_subreddit_distribution(subreddit):
     """
     Analyze the distribution of sentiment scores.
-    
+
     Args:
         subreddit: A string representing the subreddit name.
-    
+
     Returns:
         sentiment_dicts: A list of dictionaries where the keys are the
         nesting depths for the comment replies and the values are floats
