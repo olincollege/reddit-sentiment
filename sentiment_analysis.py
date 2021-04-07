@@ -154,13 +154,13 @@ def get_sentiment_by_depth(comment_df, reply_dicts):
     Args:
         comment_df: DataFrame containing cleaned comment data.
         reply_dicts: A list of dictionaries, where the key represents depth and
-            the values represent the comment_id of each comment at that depth.
+            the values represent the text of each comment at that depth.
 
     Returns:
         sentiment_dicts: A list of dictionaries where the keys are the
         nesting depths for the comment replies and the values are a tuple of
-        the average compound sentiment scores for that depth and the number
-        of comments in that depth.
+        the float average compound sentiment scores for that depth and the
+        integer number of comments in that depth.
     """
     sentiment_dicts = []
     for comment_dict in reply_dicts:

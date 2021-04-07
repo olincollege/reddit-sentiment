@@ -10,7 +10,10 @@ from sentiment_analysis import (
     get_most_replied_comments,
     analyze_sentiment,
     avg_depth_sentiment,
-    get_sentiment_by_depth
+    get_sentiment_by_depth,
+    get_sentiment_lists,
+    analyze_subreddit_by_depth,
+    analyze_subreddit_distribution
 )
 
 # Read in data.
@@ -25,11 +28,14 @@ test_data = {
                           "comment 3c AWESOME", "comment 4a AWESOME"]
 }
 test_comment_df = pd.DataFrame.from_dict(test_data)
+test_comment_df.to_csv('./cleaneddata/' + 'test' +
+                            '_comments_cleaned.csv')
 
 test_comments_by_depth = {0: ["1"], 1: ["2a", "2b"], 2: ["3a", "3b", "3c"],
                           3: ["4a"]}
 
-test_reply_dicts = {0: ["1"], 1: ["2a", "2b"], 2: ["3a", "3b"], 3: ["4a"]}
+test_reply_dicts = [create_reply_dict(test_comment_df, "comment 1a AWESOME")]
+
 
 # Define sets of test cases.
 
@@ -91,7 +97,7 @@ get_most_replied_comments_cases = [
 
 get_analyze_sentiment_cases = [
     # Check that an empty string returns 0.
-    ("", "neutral"),
+    ([""], "neutral"),
     # Check that a neutral word returns 0.
     (["today"], "neutral"),
     # Check that multiple neutral words return 0.
@@ -105,6 +111,11 @@ get_analyze_sentiment_cases = [
     # Check that negative words are negative.
     (["I did not have fun writing these unit tests", "I am sad"], "negative"),
     # Crowdsourced unit tests below!
+    (["Berwin pivot.", "Cara leap"], "neutral"),
+    (["Why is Ayesha so scrumdidlyumptious"], "neutral"),
+    (["The cow jumped on the pitchfork"], "neutral"),
+    (["No"], "negative"),
+    (["beans"], "neutral")
 ]
 
 get_avg_depth_sentiment_cases = [
@@ -120,26 +131,25 @@ get_get_sentiment_by_depth_cases = [
 ]
 
 get_get_sentiment_lists_cases = [
+    # Check that comment sentiment is mapped to the correct depth.
     (test_comment_df, test_reply_dicts)
 ]
 
-test_data = {
-    'comment_id': ["1", "2a", "2b", "3a", "3b", "3c", "4a"],
-    'comment_parent_id': ["0", "1", "1", "2a", "2a", "2b", "3a"],
-    'tokenized_comment': ["comment 1a AWESOME", "comment 2a AWESOME",
-                          "comment 2b TERRIBLE", "comment 3a AWESOME", "comment 3b TERRIBLE",
-                          "comment 3c AWESOME", "comment 4a AWESOME"]
-}
-test_comment_df = pd.DataFrame.from_dict(test_data)
+get_analyze_subreddit_by_depth_cases = [
+    # Check retrieval of data, that depths correspond correctly, and that
+    # sentiment scores are floats.
+    "test"
+]
 
-test_comments_by_depth = {0: ["1"], 1: ["2a", "2b"], 2: ["3a", "3b", "3c"],
-                          3: ["4a"]}
+get_analyze_subreddit_distribution_cases = [
+    # Check retrieval of data, that depths correspond correctly, and that
+    # sentiment scores are floats.
+    "test"
+]
 
-# make sure expected depth is equal to actual depth -- test keys/non-sentiment parts
 
 # Define standard testing functions to check functions' outputs given certain
 # inputs defined above.
-
 
 @pytest.mark.parametrize("comment_df, comment_id, child_reply_ids",
                          get_find_replies_cases)
@@ -231,7 +241,7 @@ def test_avg_depth_sentiment(comment_df, depth, comments_by_depth,
         assert avg_depth_sentiment(comment_df, depth, comments_by_depth) == 0
 
 
-@pytest.mark.parametrize("comment_df, reply_dicts")
+@pytest.mark.parametrize("comment_df, reply_dicts", get_get_sentiment_by_depth_cases)
 def test_get_sentiment_by_depth(comment_df, reply_dicts):
     """
     Test that depth is correctly mapped to average comment sentiment.
@@ -241,5 +251,54 @@ def test_get_sentiment_by_depth(comment_df, reply_dicts):
         reply_dicts: A list of dictionaries, where the key represents depth and
             the values represent the comment_id of each comment at that depth.
     """
-    print(get_sentiment_by_depth(comment_df, reply_dicts))
-    assert get_sentiment_by_depth(comment_df, reply_dicts) == 0
+    assert get_sentiment_by_depth(comment_df, reply_dicts) == []
+
+@pytest.mark.parametrize("comment_df, reply_dicts", get_get_sentiment_lists_cases)
+def test_get_sentiment_lists(comment_df, reply_dicts):
+    """
+    Test that depth is mapped to comment sentiment.
+
+    Args:
+        comment_df: DataFrame containing cleaned comment data.
+        reply_dicts: A list of dictionaries, where the key represents depth and
+            the values represent the comment_id of each comment at that depth.
+    """
+    assert get_sentiment_lists(comment_df, reply_dicts)
+
+@pytest.mark.parametrize("subreddit", get_analyze_subreddit_by_depth_cases)
+def test_analyze_subreddit_by_depth(subreddit):
+    """
+    Test that the cleaned DataFrame is correctly retrieved, the number of
+    comments in each depth is correct, and that the sentiment scores are floats
+
+    Args:
+        subreddit: String representing name of subreddit
+    """
+    depths = []
+    scores = []
+    tuples = analyze_subreddit_by_depth(subreddit)[0].values()
+    for tuple in tuples:
+        depths.append(tuple[1])
+        scores.append(tuple[0])
+    assert depths == [1, 2, 3, 1] and all(isinstance(score, float) for score
+                                                                    in scores)
+
+@pytest.mark.parametrize("subreddit", get_analyze_subreddit_distribution_cases)
+def test_analyze_subreddit_distribution(subreddit):
+    """
+    Test that the cleaned DataFrame is correctly retrieved, that the nesting
+    depths are correct, and that the sentiment values are floats.
+
+    Args:
+        subreddit: String representing name of subreddit
+    """
+    test_sentiment_dict = analyze_subreddit_distribution(subreddit)[0]
+    test_depths = list(test_sentiment_dict.keys())
+    test_sentiments = list(test_sentiment_dict.values())
+    flat_sentiments = []
+    for sentiment_list in test_sentiments:
+        for value in sentiment_list:
+            flat_sentiments.append(value)
+
+    assert test_depths == sorted(test_depths) and all(isinstance(score, float
+                                                ) for score in flat_sentiments)

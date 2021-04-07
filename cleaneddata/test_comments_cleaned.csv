@@ -1,0 +1,8 @@
+,comment_id,comment_parent_id,tokenized_comment
+0,1,0,comment 1a AWESOME
+1,2a,1,comment 2a AWESOME
+2,2b,1,comment 2b TERRIBLE
+3,3a,2a,comment 3a AWESOME
+4,3b,2a,comment 3b TERRIBLE
+5,3c,2b,comment 3c AWESOME
+6,4a,3a,comment 4a AWESOME
