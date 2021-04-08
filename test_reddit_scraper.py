@@ -8,7 +8,7 @@ import pytest
 # Define sets of test cases.
 
 test_subreddit_list = ['AmItheAsshole', 'politics', 'MadeMeSmile', 'AskReddit',
-                  'TalesFromRetail']
+                       'TalesFromRetail']
 
 get_scrape_reddit_comments_cases = [
     # Check that data is not stored in the wrong directory.

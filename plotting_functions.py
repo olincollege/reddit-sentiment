@@ -112,9 +112,9 @@ def sentiment_difference_bubble(subreddit, sentiment_dicts):
     difference_dicts = get_sentiment_difference(sentiment_dicts)
     for difference_dict in difference_dicts:
         sns.scatterplot(x=difference_dict.keys(), y=[value[0] for value in
-                        difference_dict.values()], size=[value[1] for value in
-                        difference_dict.values()], alpha=0.75, legend=False,
-                        sizes=(20, 2000))
+                    difference_dict.values()], size=[value[1] for value in
+                    difference_dict.values()], alpha=0.75, legend=False,
+                    sizes=(20, 2000))
     plt.xlabel('Comment depth')
     plt.ylabel('Average compound sentiment score change')
     plt.title(f'r/{subreddit} Most Replied Comments\' Sentiment Change ' +
@@ -213,21 +213,21 @@ def sentiment_categorized_bubble(subreddit, sentiment_dicts):
     fig, axs = plt.subplots(1, 3, figsize=(12, 4), sharey=True)
     for categorized_dict in categorized_dicts[0]:
         sns.scatterplot(ax=axs[0], x=categorized_dict.keys(), y=[value[0] for
-                            value in categorized_dict.values()], size=[value[1]
+                        value in categorized_dict.values()], size=[value[1]
                         for value in categorized_dict.values()], alpha=0.75,
-legend=False, sizes=(20, 2000))
+                        legend=False, sizes=(20, 2000))
     axs[0].set_title('Negative Top Level Comment')
 
     for categorized_dict in categorized_dicts[1]:
         sns.scatterplot(ax=axs[1], x=categorized_dict.keys(), y=[value[0] for
-                    value in categorized_dict.values()], size=[value[1] for
-                            value in categorized_dict.values()], alpha=0.75,
+                        value in categorized_dict.values()], size=[value[1] for
+                        value in categorized_dict.values()], alpha=0.75,
                         legend=False, sizes=(20, 2000))
     axs[1].set_title('Neutral Top Level Comment')
 
     for categorized_dict in categorized_dicts[2]:
         sns.scatterplot(ax=axs[2], x=categorized_dict.keys(), y=[value[0] for
-                            value in categorized_dict.values()], size=[value[1]
+                        value in categorized_dict.values()], size=[value[1]
                         for value in categorized_dict.values()], alpha=0.75,
                         legend=False, sizes=(20, 2000))
     axs[2].set_title('Positive Top Level Comment')
